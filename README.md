@@ -34,12 +34,12 @@ Claire bypasses these limitations by running **Python scripts that call Google A
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                  Claude Code (local / VPS)           │
+│                  Claude Code (local / VPS)          │
 │                                                     │
 │  User: "/gmail-invoice"                             │
 │         │                                           │
 │         ▼                                           │
-│  SKILL.md  ──reads──▶  context.md                  │
+│  SKILL.md  ──reads──▶  context.md                   │
 │         │                                           │
 │         ▼                                           │
 │  Bash: gmail_invoice_fetch.py                       │
