@@ -1,8 +1,8 @@
-# Claire — Personal AI Automation Assistant
+# Claire - Personal AI Automation Assistant
 
-Claire is a personal automation system built on [Claude Code](https://claude.ai/code). It organises work into **Skills** — self-contained units that bundle instructions, reference context, and execution scripts together. Skills are invoked via slash commands (`/gmail-invoice`) or triggered automatically on a schedule.
+Claire is a personal automation system built on [Claude Code](https://claude.ai/code). It organises work into **Skills** - self-contained units that bundle instructions, reference context, and execution scripts together. Skills are invoked via slash commands (`/gmail-invoice`) or triggered automatically on a schedule.
 
-> **Status:** Active — one skill in production, more planned.
+> **Status:** Active - one skill in production, more planned.
 
 ---
 
@@ -59,13 +59,13 @@ Claire bypasses these limitations by running **Python scripts that call Google A
 | Orchestration | `SKILL.md` | What to do, how to report it |
 | Knowledge | `context.md` | Vendor config, mappings, edge cases |
 | Execution | `scripts/*.py` | Deterministic API calls |
-| Secrets | `auth/`, `.env` | OAuth tokens — never in code |
+| Secrets | `auth/`, `.env` | OAuth tokens - never in code |
 
 **Key design decisions:**
-- **Skills-first:** every capability lives in `.claude/skills/<name>/` — self-contained, testable, replaceable.
+- **Skills-first:** every capability lives in `.claude/skills/<name>/` - self-contained, testable, replaceable.
 - **Python for execution:** avoids MCP limitations; direct API access is more reliable and supports binary data.
 - **Deliverables go to the cloud** (Google Drive, Sheets, Calendar); intermediates stay in `.tmp/` and are never committed.
-- **Idempotent by design:** running any skill twice produces the same result — no duplicates, no data loss.
+- **Idempotent by design:** running any skill twice produces the same result - no duplicates, no data loss.
 
 ---
 
@@ -105,7 +105,7 @@ Gmail search → download PDF attachment → pdfplumber parse
 --dry-run                              # parse only, no uploads or archiving
 ```
 
-**Auth:** Google OAuth 2.0. Token refreshes automatically. Manual re-auth only needed if the token is revoked — run `auth_google.py` locally, then copy `auth/token.json` to the server.
+**Auth:** Google OAuth 2.0. Token refreshes automatically. Manual re-auth only needed if the token is revoked - run `auth_google.py` locally, then copy `auth/token.json` to the server.
 
 ---
 
@@ -117,7 +117,7 @@ claire_claude/
 ├── CLAUDE.md                          # Project-level instructions for Claude Code
 ├── README.md                          # This file
 ├── requirements.txt                   # Python dependencies
-├── .env.example                       # Template — copy to .env and fill in values
+├── .env.example                       # Template - copy to .env and fill in values
 ├── .gitignore
 │
 ├── .claude/
@@ -130,7 +130,7 @@ claire_claude/
 │               ├── auth_google.py           # One-time OAuth setup (run locally)
 │               └── setup.sh                 # Venv + dependency bootstrap
 │
-├── auth/                              # !! gitignored — never commit !!
+├── auth/                              # !! gitignored - never commit !!
 │   ├── credentials.json               # Google OAuth client secret
 │   └── token.json                     # Google refresh token
 │
@@ -139,7 +139,7 @@ claire_claude/
 │   ├── glossary.md
 │   └── known_issues.md
 │
-└── .tmp/                              # Intermediates — gitignored, disposable
+└── .tmp/                              # Intermediates - gitignored, disposable
 ```
 
 ---
@@ -195,7 +195,7 @@ After step 5, `auth/token.json` is created and the skill is ready to run.
 | Asset | Protection |
 |-------|-----------|
 | `auth/credentials.json` | gitignored; `chmod 600` on server |
-| `auth/token.json` | gitignored; `chmod 600` on server; grants full Gmail modify + Drive access — treat like a password |
+| `auth/token.json` | gitignored; `chmod 600` on server; grants full Gmail modify + Drive access - treat like a password |
 | `.env` | gitignored |
 | `.claude/settings.local.json` | gitignored (may contain local paths) |
 | API trigger token (VPS) | stored in `.env` only; never logged |
@@ -216,12 +216,12 @@ This section covers running Claire autonomously on a VPS so skills execute on sc
 
 - Claude Code Routines (cloud scheduling) cannot execute Python scripts or access local credentials
 - A VPS gives you a persistent, always-on environment with full Python and direct Google API access
-- No Claude Code required at runtime — the Python scripts run standalone
+- No Claude Code required at runtime - the Python scripts run standalone
 
 ### What to use
 
 - **Provider:** Hostinger (or any Ubuntu VPS)
-- **Tier:** Smallest available (~$5–6/month) — the scripts are lightweight
+- **Tier:** Smallest available (~$5–6/month) - the scripts are lightweight
 - **OS:** Ubuntu 22.04 LTS
 
 ### Architecture on VPS
@@ -275,7 +275,7 @@ chmod 600 /opt/claire/auth/credentials.json
 chmod 600 /opt/claire/auth/token.json
 chmod 600 /opt/claire/.env
 
-# 8. Patch get_services() — disable browser OAuth flow on headless server
+# 8. Patch get_services() - disable browser OAuth flow on headless server
 #    (see note below)
 
 # 9. Test with dry run
@@ -283,7 +283,7 @@ cd /opt/claire
 .venv/bin/python .claude/skills/gmail-invoice/scripts/gmail_invoice_fetch.py --dry-run
 ```
 
-> **Important — headless OAuth patch:** The script's `get_services()` function calls
+> **Important - headless OAuth patch:** The script's `get_services()` function calls
 > `flow.run_local_server(port=0)` as a fallback when the token is missing or expired.
 > This opens a browser, which doesn't work on a headless VPS. Before deploying,
 > patch this to raise a clear error instead:
@@ -294,7 +294,7 @@ cd /opt/claire
 >     "then scp auth/token.json to the server."
 > )
 > ```
-> Token refresh (not initial auth) still works automatically — this only affects
+> Token refresh (not initial auth) still works automatically - this only affects
 > the first-time or revoked-token scenario.
 
 ### Cron schedule
@@ -340,18 +340,18 @@ def run_invoice(token=Depends(verify_token)):
 
 Run with: `uvicorn trigger_api:app --host 0.0.0.0 --port 8000`
 
-Protect with a reverse proxy (nginx + HTTPS) — never expose port 8000 directly.
+Protect with a reverse proxy (nginx + HTTPS) - never expose port 8000 directly.
 
 ### Updating skills after deployment
 
 ```bash
-# On VPS — pull code changes (scripts, context, SKILL.md)
+# On VPS - pull code changes (scripts, context, SKILL.md)
 cd /opt/claire && git pull
 
 # If dependencies changed
 .venv/bin/pip install -r requirements.txt
 
-# If token expired — from your LOCAL machine:
+# If token expired - from your LOCAL machine:
 .venv/bin/python .claude/skills/gmail-invoice/scripts/auth_google.py
 scp auth/token.json claire@your-vps-ip:/opt/claire/auth/token.json
 ```
@@ -369,8 +369,8 @@ scp auth/token.json claire@your-vps-ip:/opt/claire/auth/token.json
 ### Security hardening checklist
 
 - [ ] SSH key-only authentication (`PasswordAuthentication no` in `/etc/ssh/sshd_config`)
-- [ ] Firewall: allow only SSH (22) and HTTPS (443) — `ufw allow 22 && ufw allow 443 && ufw enable`
-- [ ] Run as non-root `claire` user — never as root
+- [ ] Firewall: allow only SSH (22) and HTTPS (443) - `ufw allow 22 && ufw allow 443 && ufw enable`
+- [ ] Run as non-root `claire` user - never as root
 - [ ] `chmod 600` on all files in `auth/` and `.env`
 - [ ] HTTPS on FastAPI endpoint via nginx reverse proxy (if using API trigger)
 - [ ] Bearer token on API endpoint stored in `.env`, not in code
