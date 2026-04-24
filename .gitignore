@@ -1,0 +1,26 @@
+# ── Secrets & credentials (NEVER commit these) ──────────────────────────────
+.env
+auth/credentials.json
+auth/token.json
+
+# ── Claude Code local settings (may contain personal paths / tokens) ─────────
+.claude/settings.local.json
+
+# ── Temporary / intermediate files ───────────────────────────────────────────
+.tmp/
+logs/
+
+# ── Python ───────────────────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
